@@ -3,7 +3,7 @@ Platform: x86_64-conda-linux-gnu (64-bit)
 Running under: Red Hat Enterprise Linux 8.8 (Ootpa)
 
 Matrix products: default
-BLAS/LAPACK: /gpfs/data/hammelllab/tamo01/inst/miniconda3/envs/R_instance/lib/libopenblasp-r0.3.24.so;  LAPACK version 3.11.0
+BLAS/LAPACK: libopenblasp-r0.3.24.so;  LAPACK version 3.11.0
 
 locale:
 [1] C
