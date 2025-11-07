@@ -1,2 +1,2 @@
-# TEsingle_Martirosyan_analysis_scripts
-Scripts used for benchmarking TE quantification of simulated single cell/nuclei reads
+# TEsingle analysis of Martirosyan dataset
+Code used to analyze Martirosyan et al. dataset with TEsingle
