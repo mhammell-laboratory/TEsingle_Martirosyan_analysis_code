@@ -1,0 +1,97 @@
+#!/bin/env Rscript
+
+# Check for input directory
+args = commandArgs(trailingOnly=T)
+if(length(args) < 1){
+    stop("Usage: custom_sBinary 5-0:0:0 1 250Gb Rscript emptyDrops_DoubletFinder_preprocessing.R [folder with market matrix]",call.=FALSE)
+}
+base = basename(args[1])
+
+library(DropletUtils)
+
+# Read in data
+data = read10xCounts(args[1], col.names = T)
+
+# Calculate barcode ranks
+bcrank = barcodeRanks(counts(data))
+uniq = ! duplicated(bcrank$rank)
+
+if(! dir.exists("preprocess")){
+    dir.create("preprocess")
+}
+
+# Output knee plot
+outfile = paste0("preprocess/",base, "_preprocess_QC.pdf")
+pdf(outfile)
+plot(bcrank$rank[uniq], bcrank$total[uniq], log="xy", xlab = "Rank", ylab = "Total UMI count", pch = 20)
+abline(h = metadata(bcrank)$inflection, col = "darkgreen", lty = 2)
+abline(h = metadata(bcrank)$knee, col = "dodgerblue", lty = 2)
+legend("bottomleft", legend=c("Inflection", "Knee"), col=c("darkgreen", "dodgerblue"), lty=2)
+    
+# Run EmptyDrops
+set.seed(100)
+emptyDropsOutput = emptyDrops(counts(data))
+    
+emptyDropsThreshold = 0.001
+is.cell = emptyDropsOutput$FDR <= emptyDropsThreshold
+print(table(Limited = emptyDropsOutput$Limited, Significant = is.cell))
+plot(emptyDropsOutput$Total, -emptyDropsOutput$LogProb, col=ifelse(is.cell, "red", "black"), xlab = "Total UMI count", ylab = "-Log Probability", pch = ".")
+legend("bottomright",c(paste("Called cells -",length(is.cell[is.cell])),paste("Empty drops -",length(is.cell[! is.cell]))),col = c("red","black"), pch = 20)
+
+library(dplyr)
+library(Seurat)
+
+# Create Seurat object
+data = Read10X(data.dir = args[1], gene.column = 1)
+scdata = CreateSeuratObject(counts = data, project = base, min.cells = 3, min.features = 200)
+rm(data)
+
+## EmptyDrops filtering
+ED = as.vector(emptyDropsOutput$FDR[match(rownames(scdata@meta.data),rownames(emptyDropsOutput))])
+scdata[["EmptyDropsFDR"]] = ED
+
+## Output EmptyDrops results (in case DoubletFinder fails)
+outfile = paste0("preprocess/",base,"_preprocessing_output.txt")
+write.table(scdata@meta.data, outfile,sep="\t",row.names = T, col.names = T, quote = F)
+
+
+## Prep for DoubletFinder
+scdata = NormalizeData(scdata)
+scdata = FindVariableFeatures(scdata)
+all.genes = rownames(scdata)[grep(":",rownames(scdata),invert=T)]
+scdata = ScaleData(scdata, features = all.genes)
+scdata = RunPCA(scdata, npcs = 30)
+
+library(DoubletFinder)
+
+## Calculate DoubletFinder parameters
+sweepRes = paramSweep(scdata, PCs = 1:30, sct = FALSE)
+sweepStats = summarizeSweep(sweepRes, GT = FALSE)
+
+bcmvn = find.pK(sweepStats)
+optimal.pk = bcmvn %>% dplyr::filter(BCmetric == max(BCmetric)) %>% dplyr::select(pK)
+
+multiplet_rates_10x = data.frame(
+    'Multiplet_rate'= c(0.004, 0.008, 0.0160, 0.023, 0.031, 0.039, 0.046, 0.054, 0.061, 0.069, 0.076),
+    'Loaded_cells' = c(800, 1600, 3200, 4800, 6400, 8000, 9600, 11200, 12800, 14400, 16000),
+    'Recovered_cells' = c(500, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000))
+multiplet_rate = multiplet_rates_10x %>%
+    dplyr::filter(Recovered_cells < nrow(scdata@meta.data)) %>% 
+    dplyr::slice(which.max(Recovered_cells)) %>% 
+    dplyr::select(Multiplet_rate) %>%
+    as.numeric(as.character())
+
+# Generate DoubleFinder parameters
+pKval = as.numeric(as.character(optimal.pk[[1]]))
+nExpPoi = round(multiplet_rate * nrow(scdata@meta.data))
+pNval = 0.25
+
+print(paste(paste("pN =",pNval), paste("pK =",pKval), paste("nExp =",nExpPoi),sep=", "))
+
+# Run DoubletFinder
+scdata = doubletFinder(scdata, PCs = 1:30, pN = pNval, pK = pKval, nExp = nExpPoi, sct = FALSE)
+
+colnames(scdata@meta.data)[grepl('DF.classifications.*', colnames(scdata@meta.data))] = "DoubletFinder"
+
+outfile = paste0("preprocess/",base,"_preprocessing_output.txt")
+write.table(scdata@meta.data, outfile,sep="\t",row.names = T, col.names = T, quote = F)
