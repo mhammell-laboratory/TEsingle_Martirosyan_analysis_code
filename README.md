@@ -65,8 +65,8 @@ Can't open perl script ".../TEsingle_aggregate.pl": No such file or directory
 Can't open perl script ".../annotate_barcode.pl": No such file or directory
 ```
 In order to fix this, you may need to change the following lines:
-- `aggregate_TEsingle_runs.sh`
-- `make_aggregated_annotations.sh`
+- [`aggregate_TEsingle_runs.sh`](https://github.com/mhammell-laboratory/TEsingle_Martirosyan_analysis_code/blob/main/aggregate_output/aggregate_TEsingle_runs.sh#L18)
+- [`make_aggregated_annotations.sh`](https://github.com/mhammell-laboratory/TEsingle_Martirosyan_analysis_code/blob/main/aggregate_output/make_aggregated_annotations.sh#L19)
 
 from
 ```
