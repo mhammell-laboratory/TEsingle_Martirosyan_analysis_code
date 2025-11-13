@@ -3,9 +3,10 @@
 #SBATCH -e %x-%j.err
 #SBATCH -o %x-%j.out
 #SBATCH --export=ALL
-#SBATCH --mem-per-cpu=5G
+#SBATCH --partition=fn_mediuam
+#SBATCH --mem-per-cpu=30G
 #SBATCH --cpus-per-task=10
-#SBATCH -t 7-0:0:0
+#SBATCH -t 5-0:0:0
 
 THREADS=10
 MAXNUM=100
@@ -13,17 +14,24 @@ ANCHOR=200
 MISMATCH=999
 MISMATCH_LMAX="0.04"
 
-if [ -z "$6" ]; then
-    echo "sbatch/sh run_STAR_TEsingle.sh [STAR index] [barcode whitelist] [R1] [R2] [Gene GTF] [TE GTF]" >&2
+if [ -z "$3" ]; then
+    echo "sbatch/sh run_STAR_TEsingle.sh [STAR index] [R1] [R2]" >&2
     exit 1
 fi
 
 GENOME="$1"
-WHITELIST="$2"
-UMI="$3"
-INPUT="$4"
-GENEGTF="$5"
-TEGTF="$6"
+UMI="$2"
+INPUT="$3"
+
+WHITELIST="${GENOME}/barcode_whitelist.txt"
+GENEGTF="${GENOME}/T2T_TEsingle_gene.gtf"
+TEGTF="${GENOME}/T2T_TEsingle_TE.gtf"
+
+if [ ! -f "${WHITELIST}" ]; then
+    echo "Barcode whitelist not found in STAR index folder." >&2
+    echo "Please run setup_STAR_index.sh to obtain all necesary files" >&2
+    exit 1
+fi
 
 CURRDIR=$PWD
 ANCHOR=$((MAXNUM + 50))
