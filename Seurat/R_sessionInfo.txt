@@ -18,7 +18,7 @@ other attached packages:
  [1] sctransform_0.4.2  scales_1.4.0       presto_1.0.0       data.table_1.17.4 
  [5] Rcpp_1.0.14        patchwork_1.3.0    glmGamPoi_1.12.2   ggrepel_0.9.6     
  [9] ggplot2_3.5.2      dplyr_1.1.4        Seurat_5.3.0       SeuratObject_5.1.0
-[13] sp_2.2-0           Matrix_1.6-5      
+[13] sp_2.2-0           Matrix_1.6-5       BPCells_0.3.0      sctransform_0.4.2
 
 loaded via a namespace (and not attached):
   [1] bitops_1.0-9                deldir_2.0-4               

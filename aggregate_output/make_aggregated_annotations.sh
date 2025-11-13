@@ -33,6 +33,11 @@ BC="${FOLDER}/barcodes.tsv.gz"
 
 perl ${SCRIPT} ${ANNOT} ${BC} > ${OUTFILE}
 
+if [ $? -ne 0 ]; then
+    echo "Error with annotating barcodes" >&2
+    exit 1
+fi
+
 SCRIPT="${SCRIPTDIR}/combine_QC_output.pl"
 OUTFILE="Martirosyan_ED_DF_output.csv"
 LIBORDER="${FOLDER}/libOrder.txt"
