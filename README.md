@@ -151,7 +151,7 @@ This pipeline has been designed for testing a specific version of STAR, TEsingle
 Cell type annotation was done manually by comparing Seurat Leiden clusters wth common neuronal & glial markers, as well as some previous published subpopulation markers (see our [paper]() for details). An automated approach with more comprehensive marker lists may give slightly different annotations, especially for subpopulations not previously well characterized.
 
 ### Using QC and aggregate output scripts on SLURM
-The QC and aggregate output scripts depend on several supporting code/files in the src subfolder. When submitting to SLURM, the src subfolder might be unlinked from the folder containing the accuracy scripts, leading to the following errors:
+The QC and aggregate output scripts depend on several supporting code/files in the `src` subfolder. When submitting to SLURM, the `src` subfolder might be unlinked from the folder containing the accuracy scripts, leading to the following errors:
 ```
 Fatal error: cannot open file '.../emptyDrops_DoubletFinder_QC.R': No such file or directory
 Can't open perl script ".../TEsingle_aggregate.pl": No such file or directory
