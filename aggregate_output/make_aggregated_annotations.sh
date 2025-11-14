@@ -7,10 +7,9 @@
 #SBATCH -o %x-%j.out
 #SBATCH --export=ALL
 
-if [ -z "$3" ]; then
+if [ -z "$2" ]; then
     echo"
     Usage: sbatch/sh $0 [aggregated output folder]
-                        [Martirosyan library annotations]
                         [QC output file(s)]
 "
     exit 1
@@ -20,14 +19,10 @@ SCRIPTDIR=$(dirname $0)
 SCRIPTDIR="${SCRIPTDIR}/src"
 
 FOLDER="$1"
-if [ -f "${SCRIPTDIR}/Martirosyan_library_annotations.txt" ]; then
-    ANNOT="${SCRIPTDIR}/Martirosyan_library_annotations.txt"
-else
-    ANNOT="$2"
-fi
-shift 2
+shift
 
 SCRIPT="${SCRIPTDIR}/annotate_barcode.pl"
+ANNOT="${SCRIPTDIR}/Martirosyan_library_annotations.txt"
 OUTFILE="Martirosyan_barcode_annotations.csv"
 BC="${FOLDER}/barcodes.tsv.gz"
 

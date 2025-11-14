@@ -1,5 +1,5 @@
 #!/bin/sh -l
-#SBATCH -t 7-0:0:0
+#SBATCH -t 5-0:0:0
 #SBATCH --mem-per-cpu=100G
 #SBATCH -J emptyDrops_DoubletFinder
 #SBATCH -e %x-%j.err
@@ -13,6 +13,7 @@ if [ -z "$1" ]; then
 fi
 
 SCRIPTDIR=$(dirname $0)
+SCRIPTDIR="${SCRIPTDIR}/src"
 
 MTX="$1"
 MTX=$(realpath ${MTX})

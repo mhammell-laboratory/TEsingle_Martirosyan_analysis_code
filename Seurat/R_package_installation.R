@@ -4,7 +4,7 @@ if(! require("BiocManager")){
     install.packages("BiocManager")
 }
 
-required_packages <- c("Seurat","presto","patchwork","glmGamPoi","ggrepel","ggplot2","dpylr,"BPCells")
+required_packages <- c("Seurat","sctransform","ggrepel","ggvenn","ComplexUpset","BPCells","glmGamPoi","tidyr","Matrix","dplyr","forcats","ggplot2","patchwork","presto","scales","tibble")
 for(package in required_packages){
     if(! require(package)){
         BiocManager::install(package)

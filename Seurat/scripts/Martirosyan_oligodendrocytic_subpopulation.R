@@ -20,7 +20,7 @@ table_dir <- "subpopulation/tables"
 plots_dir <- "subpopulation/plots"
 de_dir <- "subpopulations/diffExp"
 marker_dir <- "subpopulations/markers"
-dataset <- "Martirosyan_Neuron"
+dataset <- "Martirosyan_Oligo"
 
 #---------- Loading in Seurat Object and Leiden Cluster Markers -----------
 
@@ -36,11 +36,10 @@ Idents(so) = "leiden_subpopulation"
 #---------- Renaming Leiden Clusters as Predicted Subpopulations -----------
 
 #defining new metadata column with renamed leiden clusters based on subpopulation identification
-#example code: renaming leiden clusters to subpopulation cell types for neuronal broad cell type
 so$cluster_subpopulation <- plyr::mapvalues(
   Idents(so),
-  from = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"),
-  to = c("DopaN", "Other_Neurons", "Doublet (ODC)", "DopaN", "Excitatory", "Inhibitory", "Doublet (ODC)", "Doublet (ODC)", "Inhibitory", "Doublet (Astro)", "DopaN", "Inhibitory", "Excitatory"))
+  from = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"),
+  to = c("Immature", "Stress_associated", "Stress_associated", "Myelinating", "Myelinating", "Resting", "Resting", "Ox_stress", "Ox_stress", "Myelinating", "Resting", "Resting", "Stress_associated", "Myelinating", "Resting", "OPCs"))
 
 #saving Seurat object with predicted subpopulation clusters
 outfile <- paste0(dataset,"_subpopulations.rds")
@@ -78,7 +77,7 @@ ggsave(filename = file.path(plots_dir, outplot),
 #creating a heatmap of subpopulation cell type markers based on previously published datasets
 
 #loading in subpopulation cell type markers file
-subpopulation_markers <- read.table(file.path(marker_dir, "neuron_markers.txt"), sep="\t", row.names = NULL, header = F)
+subpopulation_markers <- read.table(file.path(marker_dir, "oligo_markers.txt"), sep="\t", row.names = NULL, header = F)
 #creating a heatmap of subpopulation cell type markers based on features found in the SO
 if (!is.null(subpopulation_markers)) {
   #creating a variable of available subpopulation markers in the so and printing how many are found

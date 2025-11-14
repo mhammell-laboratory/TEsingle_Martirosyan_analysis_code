@@ -11,6 +11,7 @@ library(sctransform)
 library(glmGamPoi) #needed for sctransform to run sctransform to run faster
 library(Matrix)
 library(scales)
+library(BPCells)
 #setting Memory limit and bitmap type
 options(future.globals.maxSize = 600 * 1024^3)
 
