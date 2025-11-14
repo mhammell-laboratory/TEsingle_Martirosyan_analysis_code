@@ -1,0 +1,38 @@
+TMEM119	General Microglia Marker
+ITGAM	General Microglia Marker
+ACSL1	Proinflammatory Microglia
+CTSB	Proinflammatory Microglia
+IL7R	Innate Immune Pathway
+STAT4	Innate Immune Pathway
+CSF3R	Main Agarwal Microglia
+PLXDC2	Main Agarwal Microglia
+GAPDH	ALS: Elevated Metabolic Activity
+SLC11A1	ALS: Phagocytic Activity
+P2RY12	Martirosyan says Proinflammatory Microglia, ALS Homeostatic
+CD74	Martirosyan Microglia
+TH	Matirosyan Microglia1: DA-associated Microglia
+HSP90AA1	Matirosyan Microglia1: Unfolded protein response- Stressed Induced
+HSP90AB1	Matirosyan Microglia1: Unfolded protein response- Homeostatic
+HSPA8	Matirosyan Microglia1: Unfolded protein response
+FOS	Matirosyan Microglia1: Apoptosis
+ACTG1	Matirosyan Microglia1: Apoptosis
+DOCK8	Martirosyan Microglia2:Proinflammatory Microglia
+ARHGAP22	Martirosyan Microglia2:Proinflammatory Microglia
+ARHGAP15	Martirosyan Microglia2:Proinflammatory Microglia
+APOE	Martirosyan Microglia4: APOE and Reactive Microglia, ALS: Interferon Signaling
+SPP1	Martirosyan Microglia4: APOE and Reactive Microglia
+C1QC	Martirosyan Microglia4: Reactive Microglia: Complement cascade
+C1QB	Martirosyan Microglia4: Reactive Microglia: Complement cascade
+C1QA	Martirosyan Microglia4: Reactive Microglia: Complement cascade
+HLA-DRA	Martirosyan Microglia4: Human leukocyte antigen
+HLA-DRB3	Martirosyan Microglia4: Human leukocyte antigen
+HSPA1A	Martirosyan Microglia4: Oxidative Stress
+TREM2	Martirosyan Microglia4: Oxidative Stress
+GSTP1	Martirosyan Microglia4: Oxidative Stress
+HSPB1	Martirosyan Microglia4: Oxidative Stress
+ABCA1	Martirosyan Microglia3 dysregulation GTPase and Ubiquitin)
+MITF	Martirosyan Microglia3 dysregulation GTPase and Ubiquitin)
+STARD13	Martirosyan Microglia3 dysregulation GTPase and Ubiquitin)
+SRGAP1	Martirosyan Microglia3 dysregulation GTPase and Ubiquitin)
+SH3PXD2A	Martirosyan Microglia3 dysregulation GTPase and Ubiquitin)
+RGL1	Martirosyan Microglia3 dysregulation GTPase and Ubiquitin)

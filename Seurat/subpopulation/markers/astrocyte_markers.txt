@@ -1,0 +1,22 @@
+SLC6A3	DA-associated astrocytes
+SNCA	DA-associated astrocytes
+TH	DA-associated astrocytes
+GFAP	Astrocyte
+SLC1A3	Astrocyte
+SLC1A2	Astrocyte
+AQP4	Astrocyte
+ALDH1L1	Astrocyte
+C3	Reactive astrocyte
+CD44	Reactive astrocyte
+WIF1	Homeostatic astrocyte
+TMSB4X	Disease associated astrocyte marker (ALS)
+P2RY14	"TE astrocyte (need to also have high expression of Tes, look for co-expression)"
+UBB	"Apoptosis astrocytes, ubiquitination"
+UBC	"Apoptosis astrocytes, ubiquitination"
+HSP90AA1	"Apoptosis astrocytes, endocytic vesicle trafficking, protein folding"
+HSP90AB1	"Apoptosis astrocytes, endocytic vesicle trafficking, protein folding"
+HSPA8	"Apoptosis astrocytes, endocytic vesicle trafficking, protein folding"
+JUN	"Apoptosis astrocytes, signaling"
+FOS	"Apoptosis astrocytes, signaling"
+OLR1	Neuroinflammatory astrocyte
+GINS3	Growth and reparative astrocytes

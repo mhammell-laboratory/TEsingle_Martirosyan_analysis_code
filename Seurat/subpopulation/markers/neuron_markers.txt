@@ -1,0 +1,11 @@
+TH	Dopaminergic Neurons
+SLC6A3	Dopaminergic Neurons
+KCNJ6	Dopaminergic Neurons
+SLC18A3	Dopaminergic Neurons
+GABBR1	GABAergic Neurons
+GABBR2	GABAergic Neurons
+GAD1	GABAergic Neurons
+GAD2	GABAergic Neurons
+SLC17A6	Glutaminergic Neurons
+SLC17A7	Glutaminergic Neurons
+GLS	Glutaminergic Neurons
