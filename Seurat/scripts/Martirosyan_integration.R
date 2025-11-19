@@ -77,7 +77,7 @@ scdata = RunUMAP(scdata, reduction = "integrated.cca", reduction.name = "umap.cc
 DefaultAssay(scdata) = "RNA"
 saveRDS(scdata,"Martirosyan_2024_integrated.rds")
 
-markers = read.table("celltype_markers.txt", sep="\t", row.names = 1, header = F)
+markers = read.table("official_markers.txt", sep="\t", row.names = 1, header = F)
 
 pdf("Martirosyan_Leiden_clusters.pdf")
 Idents(scdata) = "Leiden"
