@@ -36,7 +36,6 @@ The raw data for this single nuclei dataset is available on GEO ([GSE243639](htt
 ```
 $ git clone https://github.com/mhammell-laboratory/TEsingle_Martirosyan_analysis_code.git
 ```
-
 ## Folder structure
 - `LICENSE`: BSD 3-clause license
 - `README.md`: README file
@@ -60,7 +59,6 @@ $ git clone https://github.com/mhammell-laboratory/TEsingle_Martirosyan_analysis
     - `src`: additional scripts/files for aggregating TEsingle outputs.
 
 ## How to use the pipeline
-
 ### Quantification with TEsingle
 #### Initial setup
 ##### System requirments
@@ -139,11 +137,91 @@ $ sbatch /path/to/make_aggregated_annotations.sh /path/to/Seurat/input /path/to/
 This code will take the Martirosyan sample annotation and assign it to each detected barcode (`Martirosyan_barcode_annotations.csv`). It will also combine the QC results into a single file for subsequent loading into Seurat (`Martirosyan_ED_DF_output.csv`). It is recommended that these two files are copied/moved into the `annotations` subfolder in the `Seurat` folder.
 
 ### Seurat analysis
+The code for the analysis using Seurat is designed to work in the folder structure created in the [`Seurat`](https://github.com/mhammell-laboratory/TEsingle_Martirosyan_analysis_code/tree/main/Seurat) subfolder of the GitHub repository. The R scripts should be run in the base folder, which will take inputs from relevant folders (`input` and `annotations`) and generate output either in the base folder, or various subfolders (e.g. `differential_analysis`)
+
+```
+$ echo $PWD
+/path/to/Seurat
+$ Rscript scripts/Martirosyan_integration.R
+$ Rscript scripts/Martirosyan_celltype_DE.R
+$ Rscript scripts/Martirosyan_subpopulation_integration.R cellclusters/Martirosyan_Neuron.rds
+$ Rscript scripts/Martirosyan_neuronal_subpopulation.R
+$ Rscript scripts/Martirosyan_subpopulation_integration.R cellclusters/Martirosyan_Astro.rds
+$ Rscript scripts/Martirosyan_astrocytic_subpopulation.R
+$ Rscript scripts/Martirosyan_subpopulation_integration.R cellclusters/Martirosyan_Micro.rds
+$ Rscript scripts/Martirosyan_microglial_subpopulation.R
+$ Rscript scripts/Martirosyan_subpopulation_integration.R cellclusters/Martirosyan_Oligo.rds
+$ Rscript scripts/Martirosyan_oligodendrocytic_subpopulation.R
+```
+
 #### Data integration
 ##### System requirments
 - CPU: 1
 - Memory: 1Tb
 - Allowed time: up to 5 days
+
+This step takes the combined matrix from the TEsingle runs, and adds the annotation and QC results for the identified barcodes to the metadata. It will then filter out barcodes that were determined as empty droplets (FDR >0.001) or suspected doublets, perform integration based on diagnosis (PD or control), perform dimenional reduction (PCA and UMAP) and find clusters of cell with similar profile (using Leiden algorithm). 
+```
+$ Rscript scripts/Martirosyan_integration.R
+```
+The code outputs a R object of the integrated dataset and a UMAP plot PDF showing the Leiden clusters, diagnosis and gender (for QC), and a heatmap of broad cell type markers for the Leiden clusters (to enable cluster annotation).
+
+#### Cell type annotation, subsetting and differential analysis
+##### System requirments
+- CPU: 1
+- Memory: 600Gb
+- Allowed time: up to 5 days
+
+This step takes the integrated Seurat R object, annotates the Leiden clusters to broad cell types, subset the broad cell types into separate R objects (for subpopulation analysis) and runs differential analysis between Parkinson's Disease and controls for many of the broad cell types.
+```
+$ Rscript scripts/Martirosyan_celltype_DE.R
+```
+The code outputs a PDF showing the annotated Leiden clusters and their marker expression, R objects containing only barcodes corresponding to various broad cell types in the `cellclusters` subfolder, and differential analysis output (logistic regression) in the `differential_analysis` subfolder (all features tested, `[celltype]_PDvCtrl_LR_results.txt`, and significant hits (FDR < 0.05), `[celltype]_PDvCtrl_LR_sighits.txt`).
+
+#### Subpopulation integration
+##### System requirments
+- CPU: 1
+- Memory: 600Gb
+- Allowed time: up to 5 days
+
+This step takes the subsetted R objects, re-normalize the counts (using `sctransform`), re-integrate based on diagnosis, perform dimensional reduction and find clusters of similar expression profile (using Leiden algorithm).
+```
+$ Rscript scripts/Martirosyan_subpopulation_integration.R cellclusters/Martirosyan_Neuron.rds
+$ Rscript scripts/Martirosyan_subpopulation_integration.R cellclusters/Martirosyan_Astro.rds
+$ Rscript scripts/Martirosyan_subpopulation_integration.R cellclusters/Martirosyan_Micro.rds
+$ Rscript scripts/Martirosyan_subpopulation_integration.R cellclusters/Martirosyan_Oligo.rds
+```
+The code outputs RDS objects at various stages of the pipeline into the `subpopulation/rds` subfolder, UMAP plots showing Leiden clusters and various metadata categories (for QC) into the `subpopulation/plots` subfolder, and a CSV containing differential "markers" for each of the identified Leiden cluster in the `subpopuation/tables` subfolder.
+
+#### Subpopulation differential analysis
+##### System requirments
+- CPU: 1
+- Memory: 600Gb
+- Allowed time: up to 5 days
+
+This step takes the integrated cell type subset R objects, labels the Leiden clusters as a particular cell subpopulation, generates heatmap of general cell type markers and cell subpopulation markers, and perform differential analyses (logistic regression) in Parkinson's Disease vs control for each subpopulation.
+```
+$ Rscript scripts/Martirosyan_neuronal_subpopulation.R
+$ Rscript scripts/Martirosyan_astrocytic_subpopulation.R
+$ Rscript scripts/Martirosyan_microglial_subpopulation.R
+$ Rscript scripts/Martirosyan_oligodendrocytic_subpopulation.R
+```
+The code outputs labelled RDS objects at various stages of the pipeline into the `subpopulation/rds` subfolder, heatmap plots into the `subpopulation/plots` subfolder, and differential analysis results into the `subpopuation/diffExp` subfolder.
+
+### Figure generation
+##### System requirments
+- CPU: 1
+- Memory: 600Gb
+- Allowed time: up to 12 hours
+
+The following scripts are used to generate figures for the paper, specifically figures 4B to 4F, 5A to 5G, 6A to 6G, 7A to 7G and supplementary figures XA to XG. The scripts should be run in the base folder used for Seurat analysis, and will output PNG of the figures into the `figures` subfolder.
+```
+$ Rscript scripts/Martirosyan_Fig4_plots.R
+$ Rscript scripts/Martirosyan_Fig5_plots.R
+$ Rscript scripts/Martirosyan_Fig6_plots.R
+$ Rscript scripts/Martirosyan_Fig7_plots.R
+$ Rscript scripts/Martirosyan_SuppFig_plots.R
+```
 
 ## Limitations
 This pipeline has been designed for testing a specific version of STAR, TEsingle and Seurat (see versions used in the dependency section). Newer versions of the software may have changed parameters and output, and could lead to different results. 
