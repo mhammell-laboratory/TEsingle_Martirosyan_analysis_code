@@ -153,7 +153,6 @@ $ Rscript scripts/Martirosyan_microglial_subpopulation.R
 $ Rscript scripts/Martirosyan_subpopulation_integration.R cellclusters/Martirosyan_Oligo.rds
 $ Rscript scripts/Martirosyan_oligodendrocytic_subpopulation.R
 ```
-
 #### Data integration
 ##### System requirments
 - CPU: 1
@@ -193,20 +192,35 @@ $ Rscript scripts/Martirosyan_subpopulation_integration.R cellclusters/Martirosy
 ```
 The code outputs RDS objects at various stages of the pipeline into the `subpopulation/rds` subfolder, UMAP plots showing Leiden clusters and various metadata categories (for QC) into the `subpopulation/plots` subfolder, and a CSV containing differential "markers" for each of the identified Leiden cluster in the `subpopuation/tables` subfolder.
 
+#### Marker heatmaps of cell subpopulations
+##### System requirments
+- CPU: 1
+- Memory: 600Gb
+- Allowed time: up to 5 days
+
+This step takes the integrated subpopulation RDS object in the `subpopulation/rds` subfolder and generate expression heatmaps of cell type/subpopulation markers.
+```
+$ Rscript scripts/Martirosyan_subpopulation_heatmap.R Neuron
+$ Rscript scripts/Martirosyan_subpopulation_heatmap.R Astro
+$ Rscript scripts/Martirosyan_subpopulation_heatmap.R Micro
+$ Rscript scripts/Martirosyan_subpopulation_heatmap.R Oligo
+```
+The code outputs heatmap plots into the `subpopulation/plots` subfolder. 
+
 #### Subpopulation differential analysis
 ##### System requirments
 - CPU: 1
 - Memory: 600Gb
 - Allowed time: up to 5 days
 
-This step takes the integrated cell type subset R objects, labels the Leiden clusters as a particular cell subpopulation, generates heatmap of general cell type markers and cell subpopulation markers, and perform differential analyses (logistic regression) in Parkinson's Disease vs control for each subpopulation.
+This step takes the integrated cell type subset R objects, labels the Leiden clusters as a particular cell subpopulation, and perform differential analyses (logistic regression) in Parkinson's Disease vs control for each subpopulation.
 ```
 $ Rscript scripts/Martirosyan_neuronal_subpopulation.R
 $ Rscript scripts/Martirosyan_astrocytic_subpopulation.R
 $ Rscript scripts/Martirosyan_microglial_subpopulation.R
 $ Rscript scripts/Martirosyan_oligodendrocytic_subpopulation.R
 ```
-The code outputs labelled RDS objects at various stages of the pipeline into the `subpopulation/rds` subfolder, heatmap plots into the `subpopulation/plots` subfolder, and differential analysis results into the `subpopuation/diffExp` subfolder.
+The code outputs labelled RDS objects at various stages of the pipeline into the `subpopulation/rds` subfolder, and differential analysis results into the `subpopuation/diffExp` subfolder.
 
 ### Figure generation
 ##### System requirments
