@@ -284,4 +284,4 @@ A copy of BSD 3-clause licence is included along with the software, and can be a
 
 - Contributors: Esther Cheng, Talitha Forcier, Oliver Tam & Molly Gale Hammell
 
-This research was funded in whole by Aligning Science Across Parkinson’s (ASAP-000520) through the Michael J. Fox Foundation for Parkinson’s Research (MJFF).
+This research was funded in whole or in part by Aligning Science Across Parkinson’s (ASAP-000520) through the Michael J. Fox Foundation for Parkinson’s Research (MJFF).
