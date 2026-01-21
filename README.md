@@ -177,7 +177,7 @@ $ Rscript scripts/Martirosyan_celltype_DE.R
 ```
 The code outputs a PDF showing the annotated Leiden clusters and their marker expression, R objects containing only barcodes corresponding to various broad cell types in the `cellclusters` subfolder, and differential analysis output (logistic regression) in the `differential_analysis` subfolder (all features tested, `[celltype]_PDvCtrl_LR_results.txt`, and significant hits (FDR < 0.05), `[celltype]_PDvCtrl_LR_sighits.txt`).
 
-#### Find celltype markers based on called population
+#### Find celltype markers based on broad cell types
 ##### System requirements
 - CPU: 1
 - Memory: 600Gb
