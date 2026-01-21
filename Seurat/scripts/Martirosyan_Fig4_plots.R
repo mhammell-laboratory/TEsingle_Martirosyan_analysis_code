@@ -25,12 +25,12 @@ plots_dir <- "figures"
 ### Figure 4B: Martirosyan UMAP
 
 #loading in so
-so <- readRDS("Martirosyan_2024_integrated.rds"))
+so <- readRDS("Martirosyan_2024_integrated.rds")
 
 #if needed grouping cell types into condensed groups
 so$celltype_condensed <- plyr::mapvalues(
-  Idents(so), from = c("Oligo", "Astro", "Exc", "DopaN", "Micro", "OPC", "Inh", "OtherNeuron", "Unk", "Pericyte_Endothelial_VLMC", "Tcell"), 
-  to = c("Oligo", "Astro", "Neurons", "Neurons", "Micro", "OPCs", "Neurons", "Neurons", "T_Cells", "Vascular", "T_Cells"))
+                                   Idents(so), from = c("Oligo", "Astro", "Exc", "DopaN", "Micro", "OPC", "Inh", "OtherNeuron", "Unk", "Pericyte_Endothelial_VLMC", "Tcell"), 
+                                   to = c("Oligo", "Astro", "Neurons", "Neurons", "Micro", "OPCs", "Neurons", "Neurons", "T_Cells", "Vascular", "T_Cells"))
 
 #"celltype_condensed" is the metadata column with the condensed cell type groups
 Idents(so) <-  so$celltype_condensed
@@ -46,12 +46,12 @@ Idents(so) <- factor(so$celltype_condensed, levels = c("Neurons",
 
 #setting cell type colors
 celltype_cols <- c("Neurons" = "#DF939A",
-                  "Astro" = "#75B2C7",
-                  "Micro" = "#726FB9",
-                  "Oligo" = "#55A35D",
-                  "OPCs" = "#D59F66",
-                  "Vascular" = "#E3C775",
-                  "T_Cells"= "#73736F")
+                   "Astro" = "#75B2C7",
+                   "Micro" = "#726FB9",
+                   "Oligo" = "#55A35D",
+                   "OPCs" = "#D59F66",
+                   "Vascular" = "#E3C775",
+                   "T_Cells"= "#73736F")
 
 #parameters for displaying UMAP
 so_UMAP <- DimPlot(so, cols = celltype_cols, reduction = "umap.cca", shuffle = TRUE, label = TRUE, label.size = 5) +
@@ -63,10 +63,10 @@ so_UMAP <- DimPlot(so, cols = celltype_cols, reduction = "umap.cca", shuffle = T
 #saving UMAP plot
 outplot <- "Fig4B.png"
 ggsave(filename = file.path(plots_dir, outplot),
-         plot = so_UMAP,
-         width = 10,
-         height = 8,
-         dpi = 300)
+       plot = so_UMAP,
+       width = 10,
+       height = 8,
+       dpi = 300)
 
 
 ### Figure 4C: Martirosyan Cell Type Marker Dot Plot
@@ -107,7 +107,37 @@ ggsave((file.path(plots_dir, outplot)),
        height = 4,
        dpi = 300)
 
-### Figure 4D: Martirosyan Cell Proportions Horizontal Bar Graph
+### Figure 4D: Martirosyan DE Genes Comparison Venn Diagram
+
+#loading in martirosyan DEGs table
+martirosyan_degs <- read.csv("path/to/martirosyan/DEG/table")
+#creating a variable for all DEGs found in martirosyan et al
+martirosyan_degs_genes <- unique(martirosyan_degs$gene)
+
+#loading in TEsingle DEGs table
+TEsingle_degs <- read.csv("path/to/TEsingle/DEG/table")
+#creating a variable for all DEGs found in martirosyan et al
+TEsingle_genes <- unique(TEsingle_degs$gene)
+
+#parameters used to make venn diagram
+all_degs <- ggvenn(list(Martirosyan = martirosyan_degs_genes, TEsingle = TEsingle_genes),
+                   fill_color = c("#55A35D", "#D59F66"),
+                   stroke_size = 0.5, set_name_size = 8, auto_scale = FALSE, show_percentage = FALSE) +
+  ggtitle("Shared and Unique DEGs in all Cell Types\n") +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        panel.background = element_rect(fill = "transparent", color = NA))
+#all_degs
+
+outplot = "Fig4D.png"
+ggsave(filename = file.path(plots_dir, outplot),
+       plot = all_degs,
+       width = 10,
+       height = 8,
+       dpi = 300)
+
+### Figure 4E: Martirosyan Cell Proportions Horizontal Bar Graph
 
 #creating data needed to make proportion bar graph
 #creating a variable that holds all control patientIDs
@@ -147,14 +177,14 @@ mean_prop_df <- mean_prop_df %>%
 
 #reordering celltype
 mean_prop_df$celltype <- factor(mean_prop_df$celltype, levels = rev(c("Neurons",
-                                                                        "Astro",
-                                                                        "Micro",
-                                                                        "Oligo",
-                                                                        "OPCs",
-                                                                        "Vascular",
-                                                                        "T_Cells")))
+                                                                      "Astro",
+                                                                      "Micro",
+                                                                      "Oligo",
+                                                                      "OPCs",
+                                                                      "Vascular",
+                                                                      "T_Cells")))
 
-#parameters uesed to create the horizontal bar plot showing mean count for each cell type and diagnosis contribution to each cell type
+#parameters used to create the horizontal bar plot showing mean count for each cell type and diagnosis contribution to each cell type
 celltype_mean_composition_plot <- ggplot(mean_prop_df, aes(x = percent, y = celltype, fill = diagnosis)) +
   geom_bar(stat = "identity", position = "stack", width = 0.8) +
   geom_vline(xintercept = 50, linetype = "dashed", color = "#73736F") +
@@ -177,103 +207,132 @@ celltype_mean_composition_plot <- ggplot(mean_prop_df, aes(x = percent, y = cell
         legend.text = element_text(size = 18, face = "bold"))
 #celltype_mean_composition_plot
 
-outplot <- "Fig4D.png"
-ggsave((file.path(plots_dir, outplot)),
-  plot = celltype_mean_composition_plot,
-  width = 10,
-  height = 8,
-  dpi = 300)
-
-### Figure 4E: Martirosyan Cell Type Pie Chart
-
-#creating df for pie chart using total cell type counts
-celltype_counts_df <- as.data.frame(table(so$celltype_condensed))
-#renaming columns in the df
-colnames(celltype_counts_df) <- c("celltype", "total_counts")
-
-#setting cell type colors
-celltype_cols <- c("Neurons" = "#DF939A",
-                  "Astro" = "#75B2C7",
-                  "Micro" = "#726FB9",
-                  "Oligo" = "#55A35D",
-                  "OPCs" = "#D59F66",
-                  "Vascular" = "#E3C775",
-                  "T_Cells"= "#73736F")
-
-#reordering cell types
-celltype_counts_df$celltype <- factor(celltype_counts_df$celltype, 
-                                          levels = c("Neurons",
-                                                     "Astro",
-                                                     "Micro",
-                                                     "Oligo",
-                                                     "OPCs",
-                                                     "Vascular",
-                                                     "T_Cells"))
-
-#adding total cell count to df from the dataset
-celltype_counts_df$totalcells <- ncol(so)
-
-#calculating the percent of each cell type within the dataset
-celltype_counts_df$percent_celltype <- round((celltype_counts_df$total_counts / celltype_counts_df$totalcells) *100, 1)
-#adding labels to be used of the legend
-celltype_counts_df <- celltype_counts_df %>%
-  mutate(legend_label = paste0(celltype, " (", percent_celltype, "%)"))
-#reordering df so that it matches factor order
-celltype_counts_df <- celltype_counts_df %>%
-  arrange(celltype)
-
-#parameters used to make cell type composition pie chart
-celltype_composition_pie <- ggplot(celltype_counts_df, 
-                                   aes(x = "", y = percent_celltype, fill = celltype)) +
-  geom_bar(stat = "identity", width = 1, color = "white") +
-  coord_polar("y", start = 0) +
-  scale_fill_manual(values = celltype_cols, 
-                   labels = celltype_counts_df$legend_label,
-                   name = "Cell Types", drop = FALSE) +
-  labs(fill = "Cell Types") +
-  theme_void() +
-  theme(plot.title = element_text(size = 14, face = "bold", hjust = 0.5),
-        plot.subtitle = element_text(size = 10, hjust = 0.5),
-        legend.position = "right",
-        legend.text = element_text(size = 14, face = "plain"),
-        legend.title = element_text(size = 18, face = "bold"))
-#celltype_composition_pie
-
 outplot <- "Fig4E.png"
 ggsave((file.path(plots_dir, outplot)),
-  plot = celltype_composition_pie,
-  width = 10,
-  height = 8,
-  dpi = 300)
+       plot = celltype_mean_composition_plot,
+       width = 10,
+       height = 8,
+       dpi = 300)
 
-### Figure 4F: Martirosyan DE Genes Comparison Venn Diagram
+### Figure 4F: Martirosyan Monogenic PD Genes Heatmap
 
-#loading in martirosyan DEGs table
-martirosyan_degs <- read.csv("path/to/martirosyan/DEG/table")
-#creating a variable for all DEGs found in martirosyan et al
-martirosyan_degs_genes <- unique(martirosyan_degs$gene)
+#loading in broad cell type DE Genes and TE table
+master_broadcell_df <- read.table("differential_analysis/Martirosyan_cellvcell_LR_results.txt", header = TRUE)
 
-#loading in TEsingle DEGs table
-TEsingle_degs <- read.csv("path/to/TEsingle/DEG/table")
-#creating a variable for all DEGs found in martirosyan et al
-TEsingle_genes <- unique(TEsingle_degs$gene)
+#filtering by genes only
+master_broadcell_df <- master_broadcell_df[!grepl(":", master_broadcell_df$gene), ]
 
-#parameters used to make venn diagram
-all_degs <- ggvenn(list(Martirosyan = martirosyan_degs_genes, TEsingle = TEsingle_genes),
-  fill_color = c("#55A35D", "#D59F66"),
-  stroke_size = 0.5, set_name_size = 8, auto_scale = FALSE, show_percentage = FALSE) +
-  ggtitle("Shared and Unique DEGs in all Cell Types\n") +
-  theme_void() +
-  theme(plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
-    plot.background = element_rect(fill = "transparent", color = NA),
-    panel.background = element_rect(fill = "transparent", color = NA))
-#all_degs
-
-outplot = "Fig4F.png"
-ggsave(filename = file.path(plots_dir, outplot),
-         plot = all_degs,
-         width = 10,
-         height = 8,
-         dpi = 300)
+#martirosyan monogenic PD genes
+martirosyan_PD_monogenic <- c("DNAJC6", "VPS13C", "LRRK2", "SNCA", "PARK7", "PINK1", "ATP13A2", "VPS35", "SYNJ1", "FBXO7", "PRKN", "GBA","PLA2G6", "POLG")
 
 
+#ordering genes
+gene_order <- master_broadcell_df %>%
+  filter(gene %in% martirosyan_PD_monogenic) %>%
+  group_by(gene) %>%
+  pull(gene)
+
+#filtering genes by listed martirosyan monogenic PD genes and reordering cell type order
+filtered_genes <- master_broadcell_df %>%
+  filter(gene %in% martirosyan_PD_monogenic) %>%
+  mutate(
+    gene = factor(gene, levels = martirosyan_PD_monogenic),
+    cell_type = factor(broad_celltype, levels = rev(c("T_Cells", 
+                                                      "Vascular", 
+                                                      "Neurons",
+                                                      "OPCs",
+                                                      "Micro",
+                                                      "Astro",
+                                                      "Oligo"))))
+
+#parameters used to create monogenic PD heatmap
+monogenic_heatmap <- ggplot(filtered_genes, aes(x = gene, y = cell_type, fill = avg_log2FC)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(
+    low = "#39738D", mid = "snow", high = "#CF3B3D",
+    midpoint = 0,
+    name = "Avg_log2FC") +
+  labs(x = "Gene", y = "Cell Type\n", title = paste("PD Monogenic Genes")) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(face = "plain", size = 10, color = "black", angle = 45),
+    axis.title.x = element_text(face = "bold", size = 14, color = "black"),
+    axis.text.y = element_text(face = "plain", size = 14, color = "black"),
+    axis.title.y = element_text(face = "bold", size = 14, color = "black"),
+    legend.title = element_text(size = 18, face = "bold"),
+    legend.text = element_text(size = 14, face = "plain"),
+    plot.title = element_text(size = 18, face = "bold", hjust = 0.5),
+    panel.background = element_blank(),
+    plot.background = element_blank(),
+    panel.border = element_blank(),
+    panel.grid = element_blank()) +
+  coord_fixed()
+#monogenic_heatmap
+
+outplot <- "Fig4F.png"
+ggsave((file.path(plots_dir, outplot)),
+       plot = monogenic_heatmap,
+       width = 10,
+       height = 8,
+       dpi = 300)
+
+
+### Figure 4G: Martirosyan PD GWAS Genes Heatmap
+
+#loading in broad cell type DE Genes and TE table
+master_broadcell_df <- read.table("differential_analysis/Martirosyan_cellvcell_LR_results.txt", header = TRUE)
+
+#filtering by genes only
+master_broadcell_df <- master_broadcell_df[!grepl(":", master_broadcell_df$gene), ]
+
+#martirosyan GWAS PD genes
+martirosyan_PD_GWAS <- c("PXK", "MAP4K4", "SECISBP2L", "STK39", "ASPA", "PPP1R21", "SCARB2", "MAPT", "NUCKS1", "ENPP4", "ABHD6", "SLC45A3", "ELOVL7", "TOX3", "ITPKB", "MED12L", "SH3GL2", "BAG3", "CD38", "CTSB", "P2RY12", "HLA-DRB1", "FCGR2A", "TMEM163", "LRRK2", "SCAF11", "GPNMB", "RBMS1", "KANSL1", "DYRK1A", "P2RY13", "HLA-DQA1", "GAK", "SNCA", "ARHGAP27", "RPS2", "RIT2", "IGSF9B", "KLHL7", "SLC2A13", "AKT3", "MIPOL1", "NSF", "SYNGR3", "CLCN3", "STX1B", "CPLX1", "NDUFB10", "TTC6", "NOTCH4", "ACVR1", "P2RY14", "YPEL1", "NCOR1")
+
+#ordering genes
+gene_order <- master_broadcell_df %>%
+  filter(gene %in% martirosyan_PD_GWAS) %>%
+  group_by(gene) %>%
+  pull(gene)
+
+#filtering genes by listed martirosyan GWAS PD genes and reordering cell type order
+filtered_genes <- master_broadcell_df %>%
+  filter(gene %in% martirosyan_PD_GWAS) %>%
+  mutate(gene = factor(gene, levels = martirosyan_PD_GWAS),
+         cell_type = factor(broad_celltype, levels = rev(c("T_Cells", 
+                                                           "Vascular", 
+                                                           "Neurons",
+                                                           "OPCs",
+                                                           "Micro",
+                                                           "Astro",
+                                                           "Oligo"))))
+
+#parameters used to create GWAS PD heatmap
+GWAS_heatmap <- ggplot(filtered_genes, aes(x = gene, y = cell_type, fill = avg_log2FC)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(
+    low = "#39738D", mid = "snow", high = "#CF3B3D",
+    midpoint = 0,
+    name = "Avg_log2FC") +
+  labs(x = "Gene", y = "Cell Type", title = paste("PD GWAS Genes")) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(face = "plain", size = 10, color = "black", angle = 90, hjust = 1),
+    axis.title.x = element_text(face = "bold", size = 12, color = "black"),
+    axis.text.y = element_text(face = "plain", size = 12, color = "black"),
+    axis.title.y = element_text(face = "bold", size = 14, color = "black"),
+    legend.title = element_text(size = 18, face = "bold"),
+    legend.text = element_text(size = 14, face = "plain"),
+    plot.title = element_text(size = 18, face = "bold", hjust = 0.5),
+    panel.background = element_blank(),
+    plot.background = element_blank(),
+    panel.border = element_blank(),
+    panel.grid = element_blank()) +
+  coord_fixed()
+#GWAS_heatmap
+
+outplot <- "Fig4G.png"
+ggsave((file.path(plots_dir, outplot)),
+       plot = GWAS_heatmap,
+       width = 10,
+       height = 8,
+       dpi = 300)
