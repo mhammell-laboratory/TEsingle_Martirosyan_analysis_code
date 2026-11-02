@@ -21,7 +21,8 @@ if(length(args) < 1){
     stop("Usage: Rscript Martirosyan_subpopulation_integration.R [celltype RDS object]", call.=FALSE)
 }
 infile <- args[1]
-base <- tools::file_path_sans_ext(infile)
+base <- basename(infile)
+base <- tools::file_path_sans_ext(base)
 
 #setting output folders
 rds_dir  <- "subpopulation/rds"
