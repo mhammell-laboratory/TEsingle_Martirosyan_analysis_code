@@ -16,6 +16,7 @@ library(tidyr)
 #setting Memory limit and bitmap type
 options(future.globals.maxSize = 600 * 1024^3)
 
+args <- commandArgs(trailingOnly = TRUE)
 if(length(args) < 1){
     stop("Usage: Rscript Martirosyan_subpopulation_heatmap.R [Neuron/Astro/Micro/Oligo]", call.=FALSE)
 }

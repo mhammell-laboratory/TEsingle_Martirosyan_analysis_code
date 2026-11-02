@@ -16,6 +16,7 @@ library(BPCells)
 options(future.globals.maxSize = 600 * 1024^3)
 
 #get RDS object containing subsetted broad cell type (e.g. Neurons)
+args <- commandArgs(trailingOnly = TRUE)
 if(length(args) < 1){
     stop("Usage: Rscript Martirosyan_subpopulation_integration.R [celltype RDS object]", call.=FALSE)
 }
