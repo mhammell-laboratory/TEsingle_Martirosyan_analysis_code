@@ -20,7 +20,7 @@ if(length(args) < 1){
     stop("Usage: Rscript Martirosyan_subpopulation_integration.R [celltype RDS object]", call.=FALSE)
 }
 infile <- args[1]
-base <- tools:file_path_sans_ext(infile)
+base <- tools::file_path_sans_ext(infile)
 
 #setting output folders
 rds_dir  <- "subpopulation/rds"
@@ -80,7 +80,7 @@ so <- IntegrateLayers(
   so, method = CCAIntegration, 
   orig.reduction = 'pca', normalization.method = 'SCT', 
   features = all_genes, new.reduction = 'integrated.cca', dims = 1:30)
-joining layers after integration
+#joining layers after integration
 cat("Joining layers after CCA integration...\n")
 so[["RNA"]] <- JoinLayers(so[["RNA"]])
 

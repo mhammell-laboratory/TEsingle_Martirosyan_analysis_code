@@ -17,7 +17,7 @@ library(tidyr)
 options(future.globals.maxSize = 600 * 1024^3)
 
 if(length(args) < 1){
-    stop("Usage: Rscript Martirosyan_subpopulation_integration.R [Neuron/Astro/Micro/Oligo]", call.=FALSE)
+    stop("Usage: Rscript Martirosyan_subpopulation_heatmap.R [Neuron/Astro/Micro/Oligo]", call.=FALSE)
 }
 celltype <- args[1]
 
